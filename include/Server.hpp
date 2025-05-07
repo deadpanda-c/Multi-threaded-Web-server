@@ -8,11 +8,20 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <exception>
 
+#define WRONG_PORT_ERROR "Port number must be between 1024 and 65535"
 
 class Server {
   public:
-    Server(const std::string& host, unsigned short port);
+    class ServerException : public std::exception {
+      public:
+        ServerException(const std::string& message) : _message(message) {}
+        const char* what() const noexcept override { return _message.c_str(); }
+      private:
+        std::string _message;
+    };
+    Server(unsigned short port);
     ~Server();
 
     void init();
