@@ -7,11 +7,15 @@ int main(int ac, char **av)
     Logging::LogError("Usage: ./server <port>");
     return 1;
   }
-  unsigned short port = static_cast<unsigned short>(std::stoi(av[1]));
+  try {
+    unsigned short port = static_cast<unsigned short>(std::stoi(av[1]));
+    Server server(port);
 
-  if (port < 1024 || port > 65535) {
-    Logging::LogError("Port must be between 1024 and 65535");
-    return 1;
+    server.init();
+    server.start();
+
+  } catch (Server::ServerException &e) {
+    Logging::LogError("Server exception: " + std::string(e.what()));
   }
   return 0;
 }
